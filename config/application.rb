@@ -19,8 +19,9 @@ module Myapp
     config.generators do |g|
       g.assets false
       g.skip_routes true
-      g.test_framework false
       g.helper false
+      g.test_framework :rspec
+      g.fixture_replacement :factory_bot, dir: "spec/factories"
     end
   end
 end
