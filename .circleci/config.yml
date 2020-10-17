@@ -5,7 +5,15 @@ orbs:
 jobs:
   build:
     docker:
-      - image: circleci/ruby:2.6.3-stretch-node
+      - image: circleci/ruby:2.5.8-stretch-node
+        environment:
+          RAILS_ENV: test
+          POSTGRES_HOST: localhost
+      - image: circleci/postgres:9.4
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: myapp_test
     executor: ruby/default
     steps:
       - checkout
@@ -13,3 +21,18 @@ jobs:
           name: Which bundler?
           command: bundle -v
       - ruby/bundle-install
+      - run:
+          name: yarn install
+          command: yarn install
+      - run:
+          name: DB create
+          command: bundle exec rails db:create
+      - run:
+          name: DB migrate
+          command: bundle exec rails db:migrate
+      - run:
+          name: Rubocop
+          command: bundle exec rubocop
+      - run:
+          name: Rspec
+          command: bundle exec rspec
